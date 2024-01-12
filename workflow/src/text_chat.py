@@ -20,6 +20,9 @@ from error_handler import (
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "libs"))
 
+# https://docs.llamaindex.ai/en/stable/examples/llm/ollama.html
+from llama_index.llms import Ollama
+from llama_index.llms import ChatMessage
 import openai
 
 openai.api_key = os.getenv("api_key")
@@ -371,8 +374,65 @@ def make_chat_request(
     return prompt, full_reply_content
 
 
+@time_it
+def make_ollama_chat_request(
+        prompt: str,
+        model: str,
+        temperature: float,
+        max_tokens: Optional[int],
+        top_p: int,
+        frequency_penalty: float,
+        presence_penalty: float,
+) -> Tuple[str, str]:
+    """Sends a chat request to your local Ollama model and returns the prompt and
+    response as a tuple.
+    Args:
+        prompt (str): The prompt to send to the model.
+        model (str): The model to be used, install ollama and list the available models
+        temperature (float): Controls the "creativity" of the response. Higher values result in more diverse responses.
+        max_tokens (Optional[int]): The maximum number of tokens (words) in the response.
+        top_p (int): Controls the "quality" of the response. Higher values result in more coherent responses.
+        frequency_penalty (float): Controls the model's tendency to repeat itself.
+        presence_penalty (float): Controls the model's tendency to stay on topic.
+        stream_reply: (int) Controls whether to stream the reply.
+    Returns:
+        Tuple[str, str]: A tuple containing the prompt and the response from the model.
+    """
+    intercept_custom_prompts(prompt)
+    prompt = prompt_for_alias(prompt)
+    messages = create_message(prompt)
+    chat_messages = []
+    # Ollama uses ChatMessage, so we transform here for now
+    for message in messages:
+        chat_messages.append(ChatMessage(role=message['role'], content=message['content']))
+    write_to_cache("last_chat_request_successful", True)
+
+    try:
+        # @TODO: Fixed model for now
+        llm = Ollama(model="llama2", request_timeout=30.0)
+        response = llm.chat(chat_messages)
+
+    except Exception as exception:  # pylint: disable=broad-except
+        response = exception_response(exception)
+        write_to_cache("last_chat_request_successful", False)
+        log_error_if_needed(
+            model=__model,
+            error_message=exception._message,  # type: ignore  # pylint: disable=protected-access
+            user_prompt=prompt,
+            parameters={
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "top_p": top_p,
+                "frequency_penalty": frequency_penalty,
+                "presence_penalty": presence_penalty,
+            },
+        )
+
+    return prompt, response
+
+
 exit_on_error()
-__prompt, __response = make_chat_request(
+__prompt, __response = make_ollama_chat_request(
     get_query(),
     __temperature,
     __max_tokens,
