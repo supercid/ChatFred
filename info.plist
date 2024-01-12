@@ -4160,6 +4160,14 @@ Please refer to OpenAI's [safety best practices guide](https://platform.openai.c
 						<string>GPT-4 (32k)</string>
 						<string>gpt-4-32k</string>
 					</array>
+					<array>
+						<string>Ollama Llama2</string>
+						<string>llama2:latest</string>
+					</array>
+					<array>
+						<string>Ollama Mistral</string>
+						<string>mistral:latest</string>
+					</array>
 				</array>
 			</dict>
 			<key>description</key>
