@@ -2155,7 +2155,7 @@ sys.stdout.write(ast.literal_eval(sys.argv[1])["text"])</string>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python3 src/text_chat.py $1</string>
+				<string>/Users/cid.lopes/Developer/ChatFred/venv/bin/python src/text_chat.py $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -2497,7 +2497,7 @@ RESPONSE:'{query}'</string>
 						<key>matchmode</key>
 						<integer>5</integer>
 						<key>matchstring</key>
-						<string>🚨\s</string>
+						<string></string>
 						<key>outputlabel</key>
 						<string></string>
 						<key>uid</key>
@@ -2687,7 +2687,7 @@ python3 -c 'import caching_manager; caching_manager.combine_user_input_with_quer
 						<key>matchmode</key>
 						<integer>5</integer>
 						<key>matchstring</key>
-						<string>0</string>
+						<string></string>
 						<key>outputlabel</key>
 						<string>{query}</string>
 						<key>uid</key>
@@ -3006,7 +3006,7 @@ RESPONSE:'{query}'</string>
 						<key>matchmode</key>
 						<integer>5</integer>
 						<key>matchstring</key>
-						<string>0</string>
+						<string></string>
 						<key>outputlabel</key>
 						<string>{query}</string>
 						<key>uid</key>
